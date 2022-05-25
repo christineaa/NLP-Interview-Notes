@@ -12,60 +12,68 @@
 > Transformer 常见问题
 
 - [【关于Transformer】那些你不知道的事](#关于transformer那些你不知道的事)
-  - [一、动机篇](#一动机篇)
-    - [1.1 为什么要有 Transformer?](#11-为什么要有-transformer)
-    - [1.2 Transformer 作用是什么？](#12-transformer-作用是什么)
-  - [二、整体结构篇](#二整体结构篇)
-    - [2.1 Transformer 整体结构是怎么样？](#21-transformer-整体结构是怎么样)
-    - [2.2 Transformer-encoder 结构怎么样？](#22-transformer-encoder-结构怎么样)
-    - [2.3 Transformer-decoder 结构怎么样?](#23-transformer-decoder-结构怎么样)
-  - [三、模块篇](#三模块篇)
-    - [3.1 self-attention 模块](#31-self-attention-模块)
-      - [3.1.1 传统 attention 是什么?](#311-传统-attention-是什么)
-      - [3.1.2 为什么 会有self-attention?](#312-为什么-会有self-attention)
-      - [3.1.3 self-attention 的核心思想是什么?](#313-self-attention-的核心思想是什么)
-      - [3.1.4 self-attention 的目的是什么?](#314-self-attention-的目的是什么)
-      - [3.1.5 self-attention 的怎么计算的?](#315-self-attention-的怎么计算的)
-      - [3.1.6 self-attention 为什么Q和K使用不同的权重矩阵生成，为何不能使用同一个值进行自身的点乘？](#316-self-attention-为什么q和k使用不同的权重矩阵生成为何不能使用同一个值进行自身的点乘)
-      - [3.1.7 为什么采用点积模型的 self-attention 而不采用加性模型？](#317-为什么采用点积模型的-self-attention-而不采用加性模型)
-      - [3.1.8 Transformer 中在计算 self-attention 时为什么要scaled dot product? 即 除以 $\sqrt{d}$？](#318-transformer-中在计算-self-attention-时为什么要scaled-dot-product-即-除以-sqrtd)
-      - [3.1.9 self-attention 如何解决长距离依赖问题？](#319-self-attention-如何解决长距离依赖问题)
-      - [3.1.10 self-attention 如何并行化？](#3110-self-attention-如何并行化)
-      - [3.1.11 为什么用双线性点积模型（即Q，K两个向量）](#3111-为什么用双线性点积模型即qk两个向量)
-    - [3.2 multi-head attention 模块](#32-multi-head-attention-模块)
-      - [3.2.1 multi-head attention 的思路是什么样?](#321-multi-head-attention-的思路是什么样)
-      - [3.2.2 multi-head attention 的步骤是什么样?](#322-multi-head-attention-的步骤是什么样)
-      - [3.2.3 Transformer为何使用多头注意力机制？（为什么不使用一个头）](#323-transformer为何使用多头注意力机制为什么不使用一个头)
-      - [3.2.4 多头机制为什么有效？](#324-多头机制为什么有效)
-      - [3.2.5 为什么在进行多头注意力的时候需要对每个head进行降维？](#325-为什么在进行多头注意力的时候需要对每个head进行降维)
-      - [3.2.6 multi-head attention 代码介绍](#326-multi-head-attention-代码介绍)
-    - [3.3 位置编码（Position encoding）模块](#33-位置编码position-encoding模块)
-      - [3.3.1 为什么要 加入 位置编码（Position encoding） ？](#331-为什么要-加入-位置编码position-encoding-)
-      - [3.3.2 位置编码（Position encoding）的思路是什么 ？](#332-位置编码position-encoding的思路是什么-)
-      - [3.3.3 位置编码（Position encoding）的作用是什么 ？](#333-位置编码position-encoding的作用是什么-)
-      - [3.3.4 位置编码（Position encoding）的步骤是什么 ？](#334-位置编码position-encoding的步骤是什么-)
-      - [3.3.5 Position encoding为什么选择相加而不是拼接呢？](#335-position-encoding为什么选择相加而不是拼接呢)
-      - [3.3.6 Position encoding和 Position embedding的区别？](#336-position-encoding和-position-embedding的区别)
-      - [3.3.7 为何17年提出Transformer时采用的是 Position Encoder  而不是Position Embedding？而Bert却采用的是 Position Embedding ？](#337-为何17年提出transformer时采用的是-position-encoder--而不是position-embedding而bert却采用的是-position-embedding-)
-      - [3.3.8 位置编码（Position encoding）的代码介绍](#338-位置编码position-encoding的代码介绍)
-    - [3.4 残差模块模块](#34-残差模块模块)
-      - [3.4.1 为什么要 加入 残差模块？](#341-为什么要-加入-残差模块)
-    - [3.5 Layer normalization 模块](#35-layer-normalization-模块)
-      - [3.5.1 为什么要 加入 Layer normalization 模块？](#351-为什么要-加入-layer-normalization-模块)
-      - [3.5.2 Layer normalization 模块的是什么？](#352-layer-normalization-模块的是什么)
-      - [3.5.3 Batch normalization 和 Layer normalization 的区别？](#353-batch-normalization-和-layer-normalization-的区别)
-      - [3.5.4 Transformer 中为什么要舍弃 Batch normalization 改用 Layer normalization 呢?](#354-transformer-中为什么要舍弃-batch-normalization-改用-layer-normalization-呢)
-      - [3.5.5  Layer normalization 模块代码介绍](#355--layer-normalization-模块代码介绍)
-    - [3.6 Mask 模块](#36-mask-模块)
-      - [3.6.1 什么是 Mask？](#361-什么是-mask)
-      - [3.6.2 Transformer 中用到 几种 Mask？](#362-transformer-中用到-几种-mask)
-      - [3.6.3 能不能介绍一下 Transformer 中用到几种 Mask？](#363-能不能介绍一下-transformer-中用到几种-mask)
-    - [3.7 Feed forward network (FFN)](#37-feed-forward-network-ffn)
-      - [3.7.1 Feed forward network (FFN)的作用？](#371-feed-forward-network-ffn的作用)
-    - [3.8 GELU](#38-gelu)
-      - [3.8.1 GELU原理？相比RELU的优点？](#381-gelu原理相比relu的优点)
-    - [3.9 Transformer的非线性来自于哪里？](#39-transformer的非线性来自于哪里)
-  - [参考](#参考)
+	- [一、动机篇](#一动机篇)
+		- [1.1 为什么要有 Transformer?](#11-为什么要有-transformer)
+		- [1.2 Transformer 作用是什么？](#12-transformer-作用是什么)
+	- [二、整体结构篇](#二整体结构篇)
+		- [2.1 Transformer 整体结构是怎么样？](#21-transformer-整体结构是怎么样)
+		- [2.2 Transformer-encoder 结构怎么样？](#22-transformer-encoder-结构怎么样)
+		- [2.3 Transformer-decoder 结构怎么样?](#23-transformer-decoder-结构怎么样)
+	- [三、模块篇](#三模块篇)
+		- [3.1 self-attention 模块](#31-self-attention-模块)
+			- [3.1.1 传统 attention 是什么?](#311-传统-attention-是什么)
+			- [3.1.2 为什么 会有self-attention?](#312-为什么-会有self-attention)
+			- [3.1.3 self-attention 的核心思想是什么?](#313-self-attention-的核心思想是什么)
+			- [3.1.4 self-attention 的目的是什么?](#314-self-attention-的目的是什么)
+			- [3.1.5 self-attention 的怎么计算的?](#315-self-attention-的怎么计算的)
+			- [3.1.6 self-attention 为什么Q和K使用不同的权重矩阵生成，为何不能使用同一个值进行自身的点乘？](#316-self-attention-为什么q和k使用不同的权重矩阵生成为何不能使用同一个值进行自身的点乘)
+			- [3.1.7 为什么采用点积模型的 self-attention 而不采用加性模型？](#317-为什么采用点积模型的-self-attention-而不采用加性模型)
+			- [3.1.8 Transformer 中在计算 self-attention 时为什么要scaled dot product? 即 除以 $\sqrt{d}$？](#318-transformer-中在计算-self-attention-时为什么要scaled-dot-product-即-除以-sqrtd)
+			- [Why self-attention?](#why-self-attention)
+			- [3.1.9 self-attention 如何解决长距离依赖问题？](#319-self-attention-如何解决长距离依赖问题)
+			- [3.1.10 self-attention 如何并行化？](#3110-self-attention-如何并行化)
+			- [3.1.11 为什么用双线性点积模型（即Q，K两个向量）](#3111-为什么用双线性点积模型即qk两个向量)
+		- [3.2 multi-head attention 模块](#32-multi-head-attention-模块)
+			- [3.2.1 multi-head attention 的思路是什么样?](#321-multi-head-attention-的思路是什么样)
+			- [3.2.2 multi-head attention 的步骤是什么样?](#322-multi-head-attention-的步骤是什么样)
+			- [3.2.3 Transformer为何使用多头注意力机制？（为什么不使用一个头）](#323-transformer为何使用多头注意力机制为什么不使用一个头)
+			- [3.2.4 多头机制为什么有效？](#324-多头机制为什么有效)
+			- [3.2.5 为什么在进行多头注意力的时候需要对每个head进行降维？](#325-为什么在进行多头注意力的时候需要对每个head进行降维)
+			- [3.2.6 multi-head attention 代码介绍](#326-multi-head-attention-代码介绍)
+		- [3.3 位置编码（Position encoding）模块](#33-位置编码position-encoding模块)
+			- [3.3.1 为什么要 加入 位置编码（Position encoding） ？](#331-为什么要-加入-位置编码position-encoding-)
+			- [3.3.2 位置编码（Position encoding）的思路是什么 ？](#332-位置编码position-encoding的思路是什么-)
+			- [3.3.3 位置编码（Position encoding）的作用是什么 ？](#333-位置编码position-encoding的作用是什么-)
+			- [3.3.4 位置编码（Position encoding）的步骤是什么 ？](#334-位置编码position-encoding的步骤是什么-)
+			- [3.3.5 Position encoding为什么选择相加而不是拼接呢？](#335-position-encoding为什么选择相加而不是拼接呢)
+			- [3.3.6 Position encoding和 Position embedding的区别？](#336-position-encoding和-position-embedding的区别)
+			- [3.3.7 为何17年提出Transformer时采用的是 Position Encoder  而不是Position Embedding？而Bert却采用的是 Position Embedding ？](#337-为何17年提出transformer时采用的是-position-encoder--而不是position-embedding而bert却采用的是-position-embedding-)
+			- [3.3.8 位置编码（Position encoding）的代码介绍](#338-位置编码position-encoding的代码介绍)
+		- [3.4 残差模块模块](#34-残差模块模块)
+			- [3.4.1 为什么要 加入 残差模块？](#341-为什么要-加入-残差模块)
+		- [3.5 Layer normalization 模块](#35-layer-normalization-模块)
+			- [3.5.1 为什么要 加入 Layer normalization 模块？](#351-为什么要-加入-layer-normalization-模块)
+			- [3.5.2 Layer normalization 模块的是什么？](#352-layer-normalization-模块的是什么)
+			- [3.5.3 Batch normalization 和 Layer normalization 的区别？](#353-batch-normalization-和-layer-normalization-的区别)
+			- [3.5.4 Transformer 中为什么要舍弃 Batch normalization 改用 Layer normalization 呢?](#354-transformer-中为什么要舍弃-batch-normalization-改用-layer-normalization-呢)
+			- [3.5.5  Layer normalization 模块代码介绍](#355--layer-normalization-模块代码介绍)
+		- [3.6 Mask 模块](#36-mask-模块)
+			- [3.6.1 什么是 Mask？](#361-什么是-mask)
+			- [3.6.2 Transformer 中用到 几种 Mask？](#362-transformer-中用到-几种-mask)
+			- [3.6.3 能不能介绍一下 Transformer 中用到几种 Mask？](#363-能不能介绍一下-transformer-中用到几种-mask)
+		- [3.7 Feed forward network (FFN)](#37-feed-forward-network-ffn)
+			- [3.7.1 Feed forward network (FFN)的作用？](#371-feed-forward-network-ffn的作用)
+		- [3.8 GELU](#38-gelu)
+			- [3.8.1 GELU原理？相比RELU的优点？](#381-gelu原理相比relu的优点)
+		- [3.9 Transformer的非线性来自于哪里？](#39-transformer的非线性来自于哪里)
+		- [3.10 Transformer存在哪些问题](#310-transformer存在哪些问题)
+			- [3.10.1 问题一：不能很好的处理超长输入问题？](#3101-问题一不能很好的处理超长输入问题)
+			- [3.10.2 问题二：方向信息以及相对位置 的 缺失 问题？](#3102-问题二方向信息以及相对位置-的-缺失-问题)
+			- [3.10.3 问题三：缺少Recurrent Inductive Bias](#3103-问题三缺少recurrent-inductive-bias)
+			- [3.10.4 问题四：Transformer是非图灵完备的： 非图灵完备通俗的理解，就是无法解决所有的问题](#3104-问题四transformer是非图灵完备的-非图灵完备通俗的理解就是无法解决所有的问题)
+			- [3.10.5 问题五：transformer缺少conditional computation](#3105-问题五transformer缺少conditional-computation)
+			- [3.10.6 问题六：transformer 时间复杂度 和 空间复杂度 过大问题](#3106-问题六transformer-时间复杂度-和-空间复杂度-过大问题)
+	- [参考](#参考)
 
 ## 一、动机篇
 
@@ -85,7 +93,7 @@
 基于Transformer的架构主要用于建模语言理解任务，它避免了在神经网络中使用递归，而是完全依赖于self-attention机制来绘制输入和输出之间的全局依赖关系。
 
 ## 二、整体结构篇
-
+标准的Transformer中，Attention的参数量为$4d^2$(四个矩阵，$W_q,W_k, W_v, W_z$)，FFN的参数量为$8d^2$(两个FC，每个$4d^2$)。
 ### 2.1 Transformer 整体结构是怎么样？
 
 - Transformer 整体结构：
@@ -479,7 +487,7 @@
 
 #### 3.1.7 为什么采用点积模型的 self-attention 而不采用加性模型？
 
-主要原因：在理论上，加性模型和点积模型的复杂度差不多，但是点积模型在实现上可以更好地利用矩阵乘法，而矩阵乘法有很多加速策略，因此能加速训练。但是论文中实验表明，当维度$d$越来越大时，加性模型的效果会略优于点积模型，原因应该是加性模型整体上还是比点积模型更复杂（有非线性因素）。
+主要原因：在理论上，加性模型和点积模型的复杂度差不多，但是点积模型因为是矩阵乘法，所以更快更节省空间，矩阵乘法有很多加速策略，因此能加速训练。但是论文中实验表明，当维度$d_k$越来越大时，加性模型的效果会略优于点积模型，论文觉得是因为QK相乘结果过大使softmax梯度消失。
 
 #### 3.1.8 Transformer 中在计算 self-attention 时为什么要scaled dot product? 即 除以 $\sqrt{d}$？
 
@@ -493,6 +501,12 @@
 
 - 原论文是这么解释的：假设每个$\boldsymbol q\in R^d$和$\boldsymbol k\in R^d$的每个维度都是服从均值为0方差为1的，那么二者的内积$\boldsymbol q^T\boldsymbol k$的均值就是0，方差就是$d$，所以内积的方差和原始方差之间的比例大约是维度值$d$，为了降低内积各个维度值的方差（这样各个维度取值就在均值附近，不会存在某个维度偏离均值太远），所以要除以$\sqrt{d}$（标准差）
 
+#### Why self-attention?
+1. 计算复杂度低：total computational complexity per layer
+
+2. 并行性：用the minimum number of sequential operations required衡量
+
+3. 长距离依赖的路径长度：路径越短，越容易学习长距离依赖（归根结底是梯度消失的问题）path length between long-range dependencies in the network
 #### 3.1.9 self-attention 如何解决长距离依赖问题？
 
 - 引言：
@@ -775,10 +789,8 @@ Transformer的多头注意力看上去是借鉴了CNN中同一卷积层内使用
 #### 3.5.1 为什么要 加入 Layer normalization 模块？
 
 - 动机：因为 transformer 堆叠了 很多层，容易 梯度消失或者梯度爆炸；
-- 原因：
-  - 数据经过该网络层的作用后，不再是归一化，偏差会越来越大，所以需要将 数据 重新 做归一化处理；
-- 目的：
-  - 在数据送入激活函数之前进行normalization（归一化）之前，需要将输入的信息利用 normalization 转化成均值为0方差为1的数据，避免因输入数据落在激活函数的饱和区而出现 梯度消失或者梯度爆炸 问题
+- 原因：数据经过该网络层后，数据分布产生偏移（internal covariate shift），所以需要将 数据 重新 做归一化处理；
+- 目的：不断调整中间输出，从而使各层的中间输出的数值更稳，加速模型收敛。在数据送入激活函数之前进行normalization（归一化）之前，需要将输入的信息利用 normalization 转化成均值为0方差为1的数据，避免因输入数据落在激活函数的饱和区而出现 梯度消失或者梯度爆炸 问题
 
 #### 3.5.2 Layer normalization 模块的是什么？
 
@@ -957,6 +969,107 @@ layernorm是**在hidden size的维度进行**的，**跟batch和seq_len无关**�
 
 FFN的gelu激活函数和self-attention，注意self-attention是非线性的（因为有相乘和softmax）。
 
+### 3.10 Transformer存在哪些问题
+
+#### 3.10.1 问题一：不能很好的处理超长输入问题？
+
+  - 介绍：Transformer 固定了句子长度；
+  - 举例：
+    - 例如 在 Bert 里面，输入句子的默认长度 为 512；
+
+  - 对于长度长短问题，做了以下处理：
+
+    - 短于 512：填充句子方式；
+
+    - 长于 512：
+
+      - 处理方式一：截断句子方式（Transformer 处理方式）；
+
+
+
+      - 处理方式二：将句子划分为 多个 seg ([Vanilla Transformer](https://aaai.org/ojs/index.php/AAAI/article/view/4182) 处理方式);
+
+        - 思路：
+
+          - 将文本划分为多个segments；
+
+          - 训练的时候，对每个segment单独处理；
+
+        - 问题：
+
+          - 因为 segments 之间独立训练，所以不同的token之间，最长的依赖关系，就取决于segment的长度 (如图(a))；
+
+          - 出于效率的考虑，在划分segments的时候，不考虑句子的自然边界，而是根据固定的长度来划分序列，导致分割出来的segments在语义上是不完整的 (如图(a))；
+
+          - 在预测的时候，会对固定长度的 segment 做计算，一般取最后一个位置的隐向量作为输出。为了充分利用上下文关系，在每做完一次预测之后，就对整个序列向右移动一个位置，再做一次计算，这导致计算效率非常低 (如图(b))；
+
+
+		![](img/QQ截图20200626152309.png)
+
+      - 处理方式三：Segment-Level Recurrence ( [Transformer-XL](https://aaai.org/ojs/index.php/AAAI/article/view/4182) 处理方式);
+
+        - 思路：
+
+          - 在对当前segment进行处理的时候，**缓存**并利用上一个segment中所有layer的隐向量序列；
+
+          - 上一个segment的所有隐向量序列只参与前向计算，不再进行反向传播；
+
+
+		![](img/QQ截图20200626153600.png)
+
+
+#### 3.10.2 问题二：方向信息以及相对位置 的 缺失 问题？
+
+  - 动机：
+
+    - 方向信息和位置信息的缺失，导致 Transformer 在 NLP 中表现性能较差，例如在 命名实体识别任务中；
+
+      - 举例：
+
+        - 如下图，“Inc”单词之前的词很有可能就是机构组织（ORG），“in”单词之后的词，很有可能是时间地点（TIME）；并且一个实体应该是连续的单词组成，标红的“Louis Vuitton”不会和标蓝的“Inc”组成一个实体。但是原始的Transformer无法捕获这些信息。
+
+	![](img/QQ截图20200626154711.png)
+
+  - 解决方法：
+
+    - 可以查看 [TENER: Adapting Transformer Encoder for Name  Entity Recognition](https://arxiv.org/pdf/1911.04474.pdf) 【论文后期会做总结】
+
+
+
+#### 3.10.3 问题三：缺少Recurrent Inductive Bias
+
+  - 动机：
+
+    - 学习算法中Inductive Bias可以用来预测从未遇到的输入的输出（参考[10])。对于很多序列建模任务（如需要对输入的层次结构进行建模时，或者在训练和推理期间输入长度的分布不同时），Recurrent Inductive Bias至关重要【可以看论文[The Importance of Being Recurrent for  Modeling Hierarchical  Structure](https://arxiv.org/abs/1803.03585)】
+
+
+
+#### 3.10.4 问题四：Transformer是非图灵完备的： 非图灵完备通俗的理解，就是无法解决所有的问题
+
+- 动机：
+
+  -  在Transformer中，单层中sequential operation ( context two  symbols需要的操作数) 是$O(1)$ time，独立于输入序列的长度。那么总的sequenctial operation仅由层数$T$决定。这意味着transformer不能在计算上通用，即无法处理某些输入。如：输入是一个需要**对每个输入元素进行顺序处理**的函数，在这种情况下，对于任意给定的深度$T$的transformer，都可以构造一个长度为 $N>T$;
+
+
+
+#### 3.10.5 问题五：transformer缺少conditional computation
+
+  - 动机：
+
+    -  transformer在encoder的过程中，所有输入元素都有相同的计算量，比如对于“I arrived at the bank after crossing the river", 和"river"相比，需要更多的背景知识来推断单词"bank"的含义，然而transformer在编码这个句子的时候，无条件对于每个单词应用相同的计算量，这样的过程显然是低效的。
+
+
+
+#### 3.10.6 问题六：transformer 时间复杂度 和 空间复杂度 过大问题
+
+  - 动机：
+
+    - Transformer 中用到的自注意力与长度n呈现出$O(n^2)$的时间和空间复杂度
+
+  - 解决方法：
+
+    - [Linformer](https://arxiv.org/abs/2006.04768)
+    - Reformer
 
 ## 参考
 

@@ -26,7 +26,7 @@
   - 1、做为初始向量初始化 Decoder 的模型，做为 decoder 模型预测y1的初始向量；
   - 2、做为背景向量，指导y序列中每一个step的y的产出；
 - 步骤：
-  - 1. 遍历输入的每一个Token(词)，每个时刻的输入是上一个时刻的隐状态和输入
+  - 1. 遍历输入的每一个Token(词)，每个时刻的输入是上一个时刻的隐状态和输出
   - 2. 会有一个输出和新的隐状态。这个新的隐状态会作为下一个时刻的输入隐状态。每个时刻都有一个输出；
   - 3. 保留最后一个时刻的隐状态，认为它编码了整个句子的 语义编码 context，并把最后一个时刻的隐状态作为Decoder的初始隐状态；
 
@@ -128,28 +128,26 @@
 
 ### 3.1 Soft Attention 是什么？
 
-Soft Attention：传统的 Attention 方法，是参数化的（Parameterization），因此可导，可以被嵌入到模型中去，直接训练。梯度可以经过Attention Mechanism模块，反向传播到模型其他部分。
+Soft Attention：这是比较常见的Attention方式，对所有key求权重概率，每个key都有一个对应的权重，是一种全局的计算方式（也可以叫Global Attention）。这种方式比较理性，参考了所有key的内容，再进行加权。但是计算量可能会比较大一些。
 
 ### 3.2 Hard Attention 是什么？
 
-Hard Attention：一个随机的过程。Hard Attention不会选择整个encoder的输出做为其输入，Hard Attention会依概率Si来采样输入端的隐状态一部分来进行计算，而不是整个encoder的隐状态。为了实现梯度的反向传播，需要采用蒙特卡洛采样的方法来估计模块的梯度。
+Hard Attention：这种方式是直接精准定位到某个key，其余key就都不管了，相当于这个key的概率是1，其余key的概率全部是0。因此这种对齐方式要求很高，要求一步到位，如果没有正确对齐，会带来很大的影响。另一方面，因为不可导，一般需要用强化学习的方法进行训练。（或者使用gumbel softmax之类的）
 
 ### 3.3 Global Attention 是什么？
 
-- Global Attention：传统的Attention model一样。所有的hidden state都被用于计算Context vector 的权重，即变长的对齐向量at，其长度等于encoder端输入句子的长度。
-
-![](img/微信截图_20210109115925.png)
+Global Attention：传统的Attention model一样。所有的hidden state都被用于计算Context vector 的权重，即变长的对齐向量at，其长度等于encoder端输入句子的长度。
 
 ### 3.4 Local Attention 是什么？
 
-- 动机：Global Attention 在做每一次 encoder 时，encoder 中的所有 hidden state 都需要参与到计算中，这种方法容易造成 计算开销增大，尤其是 句子偏长的时候。
-- 介绍：Local Attention 通过结合 Soft Attention 和 Hard Attention 的一种 Attention方法
+动机：Global Attention 在做每一次 encoder 时，encoder 中的所有 hidden state 都需要参与到计算中，这种方法容易造成 计算开销增大，尤其是 句子偏长的时候。
 
-![](img/微信截图_20210109120012.png)
+介绍：soft+hard attention 对一个窗口区域进行计算。先用Hard方式定位到某个地方，以这个点为中心可以得到一个窗口区域，在这个小区域内用Soft方式来算Attention。
 
 ### 3.5 self-attention 是什么？
 
-- 核心思想：self-attention的结构在计算每个token时，总是会考虑整个序列其他token的表达；
+核心思想：self-attention的结构在计算每个token时，总是会考虑整个序列其他token的表达；
+
 举例：“我爱中国”这个序列，在计算"我"这个词的时候，不但会考虑词本身的embedding，也同时会考虑其他词对这个词的影响
 
 > 注：具体内容可以参考 [self-attention 长怎么样?](https://github.com/km1994/nlp_paper_study/tree/master/DL_algorithm/transformer_study#self-attention-长怎么样)
@@ -160,3 +158,4 @@ Hard Attention：一个随机的过程。Hard Attention不会选择整个encoder
 1. [【关于 Attention 】那些你不知道的事](https://github.com/km1994/nlp_paper_study/tree/master/DL_algorithm/Attention_study)
 2. [nlp中的Attention注意力机制+Transformer详解](https://zhuanlan.zhihu.com/p/53682800)
 3. [模型汇总24 - 深度学习中Attention Mechanism详细介绍：原理、分类及应用](https://zhuanlan.zhihu.com/p/31547842)
+4. [Attention用于NLP的一些小结](https://zhuanlan.zhihu.com/p/35739040)
